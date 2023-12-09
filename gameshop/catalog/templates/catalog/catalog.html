@@ -1,0 +1,17 @@
+{% extends "main/layout.html" %}
+
+{% block title %} Каталог {% endblock %}
+
+{% block content %}
+    <div class="catalog">
+        {% for el in items %}
+            <div class="item-card-out">
+                <img class='img' src= '{{ el.image }}'>
+                <div class="title">{{ el.title }}</div>
+                <p>{{ el.price }} ₸ </p>
+                <a href="{% url 'catalog-detail' el.slug %}" role="button" class="btn"> Подробнее </a>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+

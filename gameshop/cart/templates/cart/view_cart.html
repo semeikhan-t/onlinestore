@@ -1,0 +1,51 @@
+{% extends "main/layout.html" %}
+
+{% block title %} Корзина {% endblock %}
+
+{% load custom_filters %}
+
+{% block content %}
+<!--    <script>-->
+<!--    function deleteRowAndRedirect(slug, url) {-->
+<!--        var row = event.target.parentNode.parentNode;-->
+<!--        row.parentNode.removeChild(row);-->
+<!--        window.location.href = url;-->
+<!--    }-->
+<!--    </script>-->
+    <table class="cart-table">
+        <thead>
+            <tr>
+                <th> </th>
+                <th> Товар </th>
+                <th> Цена </th>
+                <th> Количество </th>
+                <th> Подытог </th>
+                <th> </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for el in products %}
+            <tr>
+                <td class="clickable-row" data-href="{% url 'catalog-detail' el.slug %}"><img class="table-imgs" src="{{ el.image }}"></td>
+                <td class="clickable-row" data-href="{% url 'catalog-detail' el.slug %}">{{ el.title }}</td>
+                <td>{{ el.price }} ₸</td>
+                <td>{{ cart|get_item:el.slug|default:0 }}</td>
+                <td>{% widthratio el.price 1 cart|get_item:el.slug %} ₸</td>
+                <td><a href="{% url 'removefromcart' el.slug %}" role="button" class="remove-btn"> ✖️</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="sum-pay">
+        <h1> Сумма заказов </h1>
+        <table>
+            <tbody>
+                <tr>
+                    <td> Итого </td>
+                    <td> {{ total_price|floatformat:2 }} ₸</td>
+                </tr>
+            </tbody>
+        </table>
+        <button class="pay-button">Оплатить</button>
+    </div>
+{% endblock %}
