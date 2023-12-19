@@ -12,6 +12,7 @@
 <!--        window.location.href = url;-->
 <!--    }-->
 <!--    </script>-->
+{% if total_price > 0 %}
     <table class="cart-table">
         <thead>
             <tr>
@@ -46,6 +47,10 @@
                 </tr>
             </tbody>
         </table>
-        <button class="pay-button">Оплатить</button>
+        <a href="{% url 'payment'%}"><button class="pay-button" type="button" id="custom-button">Оплатить</button></a>
     </div>
+{% else %}
+    <h2 class="here-will">Здесь будут появляться товары добавленные в корзину</h2>
+    <a class="to-catalog" href="{% url 'catalog' %}">Перейти в каталог</a>
+{% endif %}
 {% endblock %}

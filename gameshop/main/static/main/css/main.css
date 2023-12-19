@@ -412,3 +412,21 @@ h1{
 .remove-btn{
     text-decoration: none;
 }
+
+.here-will{
+    margin-left: 20%;
+    color: #000;
+}
+
+.to-catalog{
+    margin-left: 42%;
+    color: yellow;
+    text-decoration: none;
+    font-size: 25px;
+    transition: 0.7s ease;
+}
+
+.to-catalog:hover{
+    color: #79d1c2;
+    text-decoration: solid underline 4px;
+}

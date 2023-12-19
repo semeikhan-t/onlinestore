@@ -18,6 +18,5 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.address, name='payment'),
-    path('bank_card/', views.bank_card, name='bank_card'),
+    path('', views.payment, name='payment'),
 ]

@@ -17,23 +17,6 @@ def view_cart(request):
     return render(request, 'cart/view_cart.html', context=context)
 
 
-# def view_cart(request):
-#     cart = request.COOKIES.get('cart', '')
-#     all_cart_items = json.loads(cart) if cart else {}
-#
-#     # Получаем список товаров по их ID из корзины
-#     product_ids = list(map(int, all_cart_items.keys()))
-#     products = Product.objects.filter(id__in=product_ids)
-#
-#     # Вычисляем общую стоимость товаров в корзине
-#     total_price = sum(
-#         products_dict['price'] * all_cart_items[str(products_dict['id'])] for products_dict in products.values())
-#
-#     return render(
-#         request, 'cart/view_cart.html', {'products': products, 'total_price': total_price}
-#     )
-
-
 def remove_from_cart(request, slug):
     cart = request.COOKIES.get('cart', '{}')
     cart = json.loads(cart)
