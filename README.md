@@ -24,7 +24,7 @@
 
 ## Установка
 
-1. Клонируйте репозиторий: `git clone https://github.com/ваш_пользователь/проект.git`
+1. Клонируйте репозиторий: `git clone https://github.com/semeikhan-t/onlinestore.git`
 2. Установите зависимости: `pip install -r requirements.txt`
 3. Примените миграции: `python manage.py migrate`
 4. Запустите сервер: `python manage.py runserver`
