@@ -1,30 +1,32 @@
 import json
-from django.http import Http404
 from django.shortcuts import render, redirect
 from catalog.models import Product
+from django.views import View
 
 
-def view_cart(request):
-    cart = request.COOKIES.get('cart', '{}')
-    cart = json.loads(cart)
+class CartView(View):
+    template_name = 'cart/view_cart.html'
 
-    product_slugs = list(cart.keys())
-    products = Product.objects.filter(slug__in=product_slugs)
+    def get(self, request):
+        cart = request.COOKIES.get('cart', '{}')
+        cart = json.loads(cart)
 
-    total_price = sum(product.price * cart[product.slug] for product in products)
+        product_slugs = list(cart.keys())
+        products = Product.objects.filter(slug__in=product_slugs)
 
-    context = {'products': products, 'cart': cart, 'total_price': total_price}
-    return render(request, 'cart/view_cart.html', context=context)
+        total_price = sum(product.price * cart[product.slug] for product in products)
+
+        context = {'products': products, 'cart': cart, 'total_price': total_price}
+        return render(request, self.template_name, context=context)
 
 
-def remove_from_cart(request, slug):
-    cart = request.COOKIES.get('cart', '{}')
-    cart = json.loads(cart)
+class RemoveFromCartView(View):
+    def get(self, request, slug, *args, **kwargs):
+        cart = request.COOKIES.get('cart', '{}')
+        cart = json.loads(cart)
+        response = redirect("view_cart")
 
-    if slug in cart:
-        del cart[slug]
-        response = redirect("http://127.0.0.1:8000/view_cart/")
-        response.set_cookie('cart', json.dumps(cart))
+        if slug in cart:
+            del cart[slug]
+            response.set_cookie('cart', json.dumps(cart))
         return response
-    else:
-        return redirect("http://127.0.0.1:8000/view_cart/")

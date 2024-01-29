@@ -63,6 +63,31 @@ h1{
     flex-wrap: wrap;
 }
 
+.categories{
+    font-size: 20px;
+    display: flex;
+    flex-direction: row;
+    margin-left: 80px;
+}
+
+.categories p{
+    padding-left: 16px;
+    color: yellow;
+}
+
+.categories a{
+    padding-left: 16px;
+    color: #79d1c2;
+    text-decoration: none;
+    transition: 0.7s ease;
+}
+
+.categories a:hover{
+    color: yellow;
+    text-decoration: solid underline 4px;
+}
+
+
 /* Item Cards */
 
 .item-card-out{
@@ -241,7 +266,7 @@ h1{
 .form-input {
     margin-top: 3.5%;
     box-sizing: border-box;
-    width: 80px; /* Уменьшение ширины поля ввода */
+    width: 35px;
     padding: 8px;
     margin-right: 8px; /* Добавление отступа между полем ввода и кнопкой */
     border: 1px solid #ccc;

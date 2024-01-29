@@ -1,4 +1,4 @@
-from django.core.validators import MinValueValidator, MaxValueValidator
+import datetime
 from django.db import models
 
 
@@ -15,10 +15,13 @@ class PaymentData(models.Model):
     cvv = models.CharField(max_length=3, verbose_name='CVV')
     cardholder_name = models.CharField(max_length=25, verbose_name='Имя на карте')
 
-    payment_date = models.DateTimeField(auto_now_add=True, verbose_name='Дата и время оплаты')
+    time_payment = models.DateTimeField(verbose_name='Дата и время оплаты', default=datetime.datetime.now())
     cart = models.JSONField(null=True, verbose_name='Товары')
     total_price = models.IntegerField(verbose_name='Итоговая цена', null=True, blank=True)
 
     class Meta:
         verbose_name = 'Заказ'
         verbose_name_plural = 'Заказы'
+
+    def __str__(self):
+        return f'{self.country}, {self.city}, {self.post_index}, Дата: {self.time_payment}'

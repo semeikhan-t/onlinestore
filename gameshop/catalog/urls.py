@@ -18,7 +18,8 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.catalog, name='catalog'),
-    path('<slug:slug>', views.CatalogDetailView.as_view(), name='catalog-detail'),
-    path('addtocart/<slug:slug>/', views.add_to_cart, name='addtocart'),
+    path('', views.CatalogView.as_view(), name='catalog'),
+    path('<slug:slug>/', views.CatalogDetailView.as_view(), name='catalog-detail'),
+    path('addtocart/<slug:slug>/', views.AddToCartView.as_view(), name='addtocart'),
+    path('category/<slug:slug>/', views.ShowCategory.as_view(), name='category')
 ]

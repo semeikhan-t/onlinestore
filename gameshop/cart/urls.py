@@ -18,6 +18,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.view_cart, name='view_cart'),
-    path('removefromcart/<slug:slug>/', views.remove_from_cart, name='removefromcart'),
+    path('', views.CartView.as_view(), name='view_cart'),
+    path('removefromcart/<slug:slug>/', views.RemoveFromCartView.as_view(), name='removefromcart'),
 ]

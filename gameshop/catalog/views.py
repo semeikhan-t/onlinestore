@@ -1,26 +1,35 @@
 import json
 from django.db.models import Q
-from django.http import Http404, HttpResponse
-from django.shortcuts import render, redirect
-from django.views.generic import DetailView
-from .models import Product
+from django.http import Http404
+from django.shortcuts import redirect
+from django.views import View
+from django.views.generic import DetailView, ListView
+from .models import Product, ProductCategory
+from .utils import DataMixin
 
 
-def catalog(request):
-    global items
-    search_query = request.GET.get('search', None)
-    if search_query:
-        items = Product.objects.filter(
-            Q(title__icontains=search_query)
-            |
-            Q(description__icontains=search_query)
-        )
-    else:
-        items = Product.objects.all()
-    context = {'items': items}
-    if not items.exists() and search_query:
-        context['no_results'] = f'По запросу "{search_query}" к сожалению ничего не найдено :('
-    return render(request, 'catalog/catalog.html', context)
+class CatalogView(DataMixin, ListView):
+    model = Product
+    template_name = 'catalog/catalog.html'
+    context_object_name = 'items'
+    extra_context = {'title': 'Каталог'}
+
+    def get_queryset(self):
+        search_query = self.request.GET.get('search', None)
+        if search_query:
+            return Product.objects.filter(
+                Q(title__icontains=search_query) | Q(description__icontains=search_query)
+            )
+        else:
+            return Product.objects.all()
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context()
+        search_query = self.request.GET.get('search', None)
+        if not self.object_list.exists() and search_query:
+            context['no_results'] = f'По запросу "{search_query}" к сожалению ничего не найдено :('
+        return dict(list(c_def.items()) + list(context.items()))
 
 
 class CatalogDetailView(DetailView):
@@ -29,47 +38,48 @@ class CatalogDetailView(DetailView):
     context_object_name = "item_card"
 
 
-def add_to_cart(request, slug):
-    if request.method == 'POST':
-        quantity = request.POST.get('quantity', 1)
-        cart = request.COOKIES.get('cart', '{}')
-        cart = json.loads(cart)
+class AddToCartView(View):
+    def post(self, request, slug):
+        if request.method == 'POST':
+            quantity = request.POST.get('quantity', 1)
+            cart = request.COOKIES.get('cart', '{}')
+            cart = json.loads(cart)
 
-        current_quantity = cart.get(slug, 0)
-        cart[slug] = current_quantity + int(quantity)
+            current_quantity = cart.get(slug, 0)
+            cart[slug] = current_quantity + int(quantity)
 
-        response = redirect('http://127.0.0.1:8000/catalog/')
-        response.set_cookie('cart', json.dumps(cart))
-        return response
+            response = redirect('catalog')
+            response.set_cookie('cart', json.dumps(cart))
+            return response
 
-    # Вернуть ошибку или выполнить другие действия в случае GET-запроса
-    return HttpResponse("Invalid request method")
+    def get(self, request):
+        raise Http404()
 
-# def add_to_cart(request, slug, quantity):
-#     try:
-#         item = Product.objects.get(slug=slug)
+
+class ShowCategory(DataMixin, ListView):
+    model = Product
+    template_name = 'catalog/catalog.html'
+    context_object_name = 'items'
+    allow_empty = False
+
+    def get_queryset(self):
+        return Product.objects.filter(cat__slug=self.kwargs['slug'])
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title='Категория - ', cat_selected=self.kwargs['slug'])
+        return dict(list(context.items()) + list(c_def.items()))
+
+
+# def show_category(request, slug):
+#     items = Product.objects.filter(cat__slug=slug)
+#     category = ProductCategory.objects.all()
 #
-#         # Проверяем, есть ли куки 'cart'
-#         cart_cookie = request.COOKIES.get('cart', '')
+#     context = {
+#         'items': items,
+#         'cat_selected': slug,
+#         'title': 'Отображение по категориям',
+#         'cats': category,
+#     }
 #
-#         # Преобразуем содержимое 'cart' из строки JSON в словарь
-#         cart_dict = json.loads(cart_cookie) if cart_cookie else {}
-#
-#         # Увеличиваем количество товара в корзине
-#         cart_dict[str(item.id)] = cart_dict.get(str(item.id), 0) + quantity
-#
-#         # Преобразуем словарь обратно в строку JSON
-#         cart_cookie_updated = json.dumps(cart_dict)
-#
-#         # Создаем HTTP-ответ и устанавливаем обновленную корзину в куки
-#         response = redirect('http://127.0.0.1:8000/catalog/')
-#         response.set_cookie('cart', cart_cookie_updated)
-#         print(f"Cart Cookie Contents: {cart_cookie_updated}")
-#         return response
-#
-#     except Product.DoesNotExist:
-#         raise Http404("Product does not exist")
-#     except Exception as e:
-#         # Обработка других исключений (например, JSONDecodeError)
-#         print(e)
-#         raise Http404
+#     return render(request, 'catalog/catalog.html', context=context)

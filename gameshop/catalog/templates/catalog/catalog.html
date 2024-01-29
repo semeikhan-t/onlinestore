@@ -1,17 +1,40 @@
 {% extends "main/layout.html" %}
-
-{% block title %} Каталог {% endblock %}
+{% block title %}
+    {{ title }}
+{% endblock %}
 
 {% block content %}
+    <div class="categories">
+        {% if cat_selected == 0 %}
+        <p class="all-cats"> Все категории </p>
+        {% else %}
+        <a href="{% url 'catalog' %}" class="all-cats"> Все категории </a>
+        {% endif %}
+
+        {% for cat in cats %}
+            {% if cat.product__count > 0 %}
+                {% if cat.slug == cat_selected %}
+                    <p> {{ cat.name }} </p>
+                {% else %}
+                    <a href="{{ cat.get_absolute_url }}"> {{ cat.name }} </a>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+    </div>
+
     <div class="catalog">
         {% for el in items %}
             <div class="item-card-out">
                 <img class='img' src= '{{ el.image }}'>
                 <div class="title">{{ el.title }}</div>
                 <p>{{ el.price }} ₸ </p>
+                {% if el.is_available %}
+                <p style="color: green;"> В наличии </p>
+                {% else %}
+                <p style="color: red;"> Нет в наличии </p>
+                {% endif %}
                 <a href="{% url 'catalog-detail' el.slug %}" role="button" class="btn"> Подробнее </a>
             </div>
         {% endfor %}
     </div>
 {% endblock %}
-

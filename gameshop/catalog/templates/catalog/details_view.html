@@ -10,18 +10,22 @@
         <div class="details-title">
             <h2> {{ item_card.title }}</h2>
             <h1> Цена: {{ item_card.price }} ₸ </h1>
-            <p style="color: green;" class="availability"> В наличии </p>
             <p class="delivery"> Доставка в течение 7 дней </p>
+            {% if item_card.is_available %}
+            <p style="color: green;" class="availability"> В наличии </p>
             <form class="form-container" onsubmit="return validateForm()" method="POST" action="{% url 'addtocart' slug=item_card.slug %}">
                 {% csrf_token %}
                 <label class="form-label" for="quantity">Количество:</label>
                 <input class="form-input" value="1" type="text" name="quantity" id="quantity" pattern="\d+" title="Please enter a valid number" required>
                 <button class="form-button" type="submit">В Корзину</button>
             </form>
+            {% else %}
+            <p style="color: red;" class="availability"> Нет в наличии </p>
+            {% endif %}
         </div>
         <div class="description">
             <h2> Описание </h2>
-            <p> {{ item_card.description }}</p>
+            <p> {{ item_card.description|linebreaks }}</p>
         </div>
     </div>
 {% endblock %}

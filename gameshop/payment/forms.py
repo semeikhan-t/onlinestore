@@ -1,5 +1,3 @@
-import json
-
 from django import forms
 from django.core.exceptions import ValidationError
 from payment.models import PaymentData
@@ -57,9 +55,7 @@ def is_valid_cardholder_name(name):
 class PaymentForm(forms.ModelForm):
     class Meta:
         model = PaymentData
-        fields = [
-            'city', 'full_address', 'post_index', 'country', 'card_number', 'expiry_date', 'cvv', 'cardholder_name', 'cart', 'total_price'
-        ]
+        exclude = ('time_payment',)
 
     def __init__(self, *args, **kwargs):
         super(PaymentForm, self).__init__(*args, **kwargs)
@@ -88,6 +84,7 @@ class PaymentForm(forms.ModelForm):
         # Здесь получаем значение из куки и устанавливаем его в поле 'cart'
         cart_value = self.initial.get('cart_from_cookie')
         total_price = self.initial.get('total_price')
+
         instance.cart = cart_value
         instance.total_price = total_price
 
