@@ -35,6 +35,11 @@
             <input class="form-control me-2" type="search" name="search" placeholder="Search" aria-label="Search">
             <button class="btn" type="submit">🔍︎</button>
           </form>
+          {% if request.user.is_authenticated %}
+            <p class="auth" style="color: yellow; font-size: 21px;">{{ user.username }}<a class="nav-link" href="{% url 'logout_user' %}"> Выйти </a></p>
+          {% else %}
+            <p class="auth"><a class="nav-link" href="{% url 'login' %}"> Войти </a></p>
+          {% endif %}
         </div>
       </div>
       <div class="spacer"></div>
@@ -45,5 +50,6 @@
     {% endif %}
     {% block content %}
     {% endblock %}
+<!--<div class="rights">© Все права защищены 2024</div>-->
 </body>
 </html>

@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'debug_toolbar',
+    'django_recaptcha',
     'main',
     'catalog',
     'cart',
@@ -51,6 +53,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = 'gameshop.urls'
@@ -109,7 +112,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'ru'
 
-TIME_ZONE = 'Asia/Almaty'
+TIME_ZONE = 'Asia/Atyrau'
 
 USE_I18N = True
 
@@ -126,3 +129,11 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
+
+RECAPTCHA_PUBLIC_KEY = '6Lcf82wpAAAAANDHQ824Elj2HJINANFAMXPksch5'
+RECAPTCHA_PRIVATE_KEY = '6Lcf82wpAAAAAPF9j1Jwhix2mF_1wo3duZFxc3V6'
+

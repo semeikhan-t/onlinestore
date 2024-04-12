@@ -1,4 +1,5 @@
 {% extends "main/layout.html" %}
+{% load catalog_tags %}
 
 {% block title %}{{ item_card.title }}{% endblock %}
 
@@ -15,7 +16,6 @@
             <p style="color: green;" class="availability"> В наличии </p>
             <form class="form-container" onsubmit="return validateForm()" method="POST" action="{% url 'addtocart' slug=item_card.slug %}">
                 {% csrf_token %}
-                <label class="form-label" for="quantity">Количество:</label>
                 <input class="form-input" value="1" type="text" name="quantity" id="quantity" pattern="\d+" title="Please enter a valid number" required>
                 <button class="form-button" type="submit">В Корзину</button>
             </form>
@@ -27,7 +27,32 @@
             <h2> Описание </h2>
             <p> {{ item_card.description|linebreaks }}</p>
         </div>
-    </div>
-{% endblock %}
+        {% if reviews %}
+        <div class="all-reviews">
+            {% for review in reviews %}
+            <div>
+                <h1> {{ review.user }}</h1>
+                <p class="review-review"> Текст отзыва: {{ review.review }} </p>
+                <p class="review-rating"> Оценка: {{ review.rating }}/5 </p>
+                <p class="review-date"> {{ review.date }} </p>
+            </div>
+            {% endfor %}
+            </div>
+        </div>
+        {% endif %}
 
-<!--{% url 'add_to_cart' item_card.slug %}-->
+    <div class="review-form">
+        <form action="{% url 'add-review' slug=item_card.slug %}" method="post">
+        {% csrf_token %}
+        {% if form.none_field_errors %} <div class="form-error"> {{ form.none_field_errors }} </div> {% endif %}
+
+        {% for f in form %}
+            {% if f.label == 'Текст отзыва' or f.label == 'Оценка' %}
+                <p><label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}: </label>{{ f }}</p>
+            {% endif %}
+        {% endfor %}
+            <button onclick="location.replace(true);" type="submit" class="btn"> Опубликовать </button>
+        </form>
+    </div>
+
+{% endblock %}

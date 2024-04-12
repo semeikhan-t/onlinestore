@@ -1,8 +1,10 @@
 import datetime
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class PaymentData(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
     # Address data
     city = models.CharField(max_length=20, verbose_name='Город')
     full_address = models.CharField(max_length=90, verbose_name='Полный адрес')
@@ -24,4 +26,4 @@ class PaymentData(models.Model):
         verbose_name_plural = 'Заказы'
 
     def __str__(self):
-        return f'{self.country}, {self.city}, {self.post_index}, Дата: {self.time_payment}'
+        return f'{self.user}, {self.country}, {self.city}, {self.post_index}, Дата: {self.time_payment}'

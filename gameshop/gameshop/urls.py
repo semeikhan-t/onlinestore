@@ -24,5 +24,14 @@ urlpatterns = [
     path('', include('main.urls')),
     path('catalog/', include('catalog.urls')),
     path('view_cart/', include('cart.urls')),
-    path('payment/', include('payment.urls'))
+    path('payment/', include('payment.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns = [
+        path('__debug__/', include(debug_toolbar.urls)),
+    ] + urlpatterns
+
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

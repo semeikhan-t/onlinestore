@@ -1,8 +1,9 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from payment.models import PaymentData
 import datetime
 import re
+
+from payment.models import PaymentData
 
 
 def true_expiry_date(given_date):
@@ -46,7 +47,7 @@ def is_valid_credit_card(card_number):
 
 def is_valid_cardholder_name(name):
     # Имя может содержать только заглавные буквы, пробелы и дефисы
-    # Имя также не должно начинаться или заканчиваться пробелом или дефисом
+    # Имя также не должно начинаться или заканчиваться пробелом, или дефисом
     pattern = re.compile(r'^[A-Z]+([- ]?[A-Z]+)*$')
 
     return bool(pattern.match(name))
@@ -77,6 +78,8 @@ class PaymentForm(forms.ModelForm):
         self.fields['cart'].required = False
         self.fields['total_price'].widget = forms.HiddenInput()
         self.fields['total_price'].required = False
+        self.fields['user'].widget = forms.HiddenInput()
+        self.fields['user'].required = False
 
     def save(self, commit=True):
         instance = super().save(commit=False)
@@ -84,9 +87,11 @@ class PaymentForm(forms.ModelForm):
         # Здесь получаем значение из куки и устанавливаем его в поле 'cart'
         cart_value = self.initial.get('cart_from_cookie')
         total_price = self.initial.get('total_price')
+        user = self.initial.get('user')
 
         instance.cart = cart_value
         instance.total_price = total_price
+        instance.user = user
 
         if commit:
             instance.save()

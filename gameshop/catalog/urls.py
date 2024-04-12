@@ -20,6 +20,7 @@ from . import views
 urlpatterns = [
     path('', views.CatalogView.as_view(), name='catalog'),
     path('<slug:slug>/', views.CatalogDetailView.as_view(), name='catalog-detail'),
+    path('add_review/<slug:slug>/', views.AddReviewView.as_view(), name='add-review'),
     path('addtocart/<slug:slug>/', views.AddToCartView.as_view(), name='addtocart'),
-    path('category/<slug:slug>/', views.ShowCategory.as_view(), name='category')
+    path('category/<slug:slug>/', views.ShowCategory.as_view(), name='category'),
 ]

@@ -1,9 +1,10 @@
 from django.db.models import Count
-
 from .models import *
 
 
 class DataMixin:
+    paginate_by = 9
+
     def get_user_context(self, **kwargs):
         context = kwargs
         cats = ProductCategory.objects.annotate(Count('product'))

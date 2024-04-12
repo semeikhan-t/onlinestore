@@ -4,6 +4,7 @@
 {% endblock %}
 
 {% block content %}
+    {% if not no_results %}
     <div class="categories">
         {% if cat_selected == 0 %}
         <p class="all-cats"> Все категории </p>
@@ -21,6 +22,7 @@
             {% endif %}
         {% endfor %}
     </div>
+    {% endif %}
 
     <div class="catalog">
         {% for el in items %}
@@ -37,4 +39,21 @@
             </div>
         {% endfor %}
     </div>
+{% if page_obj.has_other_pages %}
+<nav aria-label="..." class="pagination">
+    <ul>
+        {% for page_num in paginator.page_range %}
+        {% if page_obj.number == page_num %}
+        <li style="color: #79d1c2; border-color: #79d1c2;"> {{ page_num }} </li>
+        {% else %}
+        <li>
+            <a href="?page={{ page_num }}"> {{ page_num }}</a>
+        </li>
+        {% endif %}
+        {% endfor %}
+    </ul>
+</nav>
+{% endif %}
+
+<div class="spacer"> </div>
 {% endblock %}
